@@ -47,12 +47,12 @@ server <- function(input, output) {
   
   datasetInput <- reactive({
     switch(input$dataset,
-           "Campbell" = presidentialForecast$Campbell,
-           "Lewis-Beck" =presidentialForecast$`Lewis-Beck`,
-           "EWT2C2" =presidentialForecast$EWT2C2,
-           "Fair" =presidentialForecast$Fair,
-           "Hibbs" =presidentialForecast$Hibbs,
-           "Abramowitz" =presidentialForecast$Abramowitz )
+           "Campbell" = presidentialForecast[15: (16- input$obs),]$Campbell,
+           "Lewis-Beck" =presidentialForecast[15: (16- input$obs),]$`Lewis-Beck`,
+           "EWT2C2" =presidentialForecast[15: (16- input$obs),]$EWT2C2,
+           "Fair" =presidentialForecast[15: (16- input$obs),]$Fair,
+           "Hibbs" =presidentialForecast[15: (16- input$obs),]$Hibbs,
+           "Abramowitz" =presidentialForecast[15: (16- input$obs),]$Abramowitz )
   })
   
   output$view <- renderTable({
@@ -61,8 +61,8 @@ server <- function(input, output) {
   
   output$distPlot <- renderPlot({
    
-    hist(presidentialForecast$Actual)
-    hist(datasetInput(),  col=rgb(0,0,1,alpha=0.3), add=T )
+    hist(presidentialForecast[15: (16- input$obs),]$Actual, col=rgb(1,0,0,alpha=0.5), xlim = c(40,60))
+    hist(datasetInput(),  col=rgb(0,0,1,alpha=0.5), add=T )
      
   })
 }
@@ -74,10 +74,6 @@ install.packages("EBMAforecast")
 library("EBMAforecast")
 data("presidentialForecast")
 
-nrow(presidentialForecast)
+hist(presidentialForecast$Actual)
 
-dev.off
-x= c(1,1,1,2,2,3)
-y= c(2,2,3,3)
-hist(x, col = "Red")
-hist(y, add = T)
+presidentialForecast[1:2,]$Actual
