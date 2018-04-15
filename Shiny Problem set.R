@@ -1,6 +1,10 @@
 # Define UI for dataset viewer app ----
 ui <- fluidPage(
   
+  plotOutput("distPlot", click = "plot_click"),
+  verbatimTextOutput("info"),
+
+  
   # App title ----
   titlePanel("Presidential..."),
   
@@ -11,12 +15,12 @@ ui <- fluidPage(
     sidebarPanel(
       
       selectInput(inputId = "dataset",
-                  label = "Choose a dataset:",
+                  label = "Choose a model",
                   choices = c("Campbell", "Lewis-Beck", "EWT2C2", "Fair",  "Abramowitz" )),
       
       numericInput(inputId = "obs",
-                   label = "Number of elections to view:",
-                   value = 15, max = 15)
+                   label = "Choose how many elections you want to see",
+                   value = 15, max = 15, min = 1)
     ,
       
       # Include clarifying text ----
@@ -29,7 +33,7 @@ ui <- fluidPage(
     # Main panel for displaying outputs ----
     mainPanel(
       
-      plotOutput("distPlot"),
+     
       tableOutput("view")
       
       
@@ -61,9 +65,16 @@ server <- function(input, output) {
   
   output$distPlot <- renderPlot({
    
-    hist(presidentialForecast[15: (16- input$obs),]$Actual, col=rgb(1,0,0,alpha=0.5), xlim = c(40,60))
-    hist(datasetInput(),  col=rgb(0,0,1,alpha=0.5), add=T )
+    hist(presidentialForecast[15: (16- input$obs),]$Actual, col=rgb(1,0,0,alpha=0.5), xlim = c(40,65),
+         main= "Comparing election models to actual election results", xlab = "Predicted Result")
+    hist(datasetInput(),  col=rgb(0,0,1,alpha=0.5), add=T)
+    legend( "topright", legend= c("model", "actual", "overlap"), col= c("red", "blue", "purple" ),
+            lty= 1, cex=0.8) 
      
+  })
+  
+  output$info <- renderText({
+    paste0("x=", input$plot_click$x, "\ny=", input$plot_click$y)
   })
 }
 
@@ -74,6 +85,6 @@ install.packages("EBMAforecast")
 library("EBMAforecast")
 data("presidentialForecast")
 
-hist(presidentialForecast$Actual)
+legend( 1,9, legend= c("model", "actual", "overlap"), col= c("red", "blue", "purple" ))  
 
-presidentialForecast[1:2,]$Actual
+
