@@ -5,12 +5,12 @@ data("presidentialForecast")
 
 ui <- fluidPage(
   
-  plotOutput("distPlot", click = "plot_click"),
+  plotOutput("distPlot", click = "plot_click"), #creates interactive plot 
   verbatimTextOutput("info"),
 
   
   # App title ----
-  titlePanel("Presidential..."),
+  titlePanel("Presidential Model Comparison"),
   
   # Sidebar layout with input and output definitions ----
   sidebarLayout(
@@ -28,7 +28,8 @@ ui <- fluidPage(
     ,
       
       # Include clarifying text ----
-      helpText("Presidential...")
+      helpText("Click on the model you want to compare to the actual election result.
+               Mostr recent election shown first")
       
  
       
@@ -41,7 +42,7 @@ ui <- fluidPage(
       tableOutput("view")
       
       
-      # Output: Header + summary of distribution ----
+    
     
     )
     
@@ -53,7 +54,7 @@ server <- function(input, output) {
   
   library("EBMAforecast")
   
-  datasetInput <- reactive({
+  datasetInput <- reactive({ #drop down menu of models 
     switch(input$dataset,
            "Campbell" = presidentialForecast[15: (16- input$obs),]$Campbell,
            "Lewis-Beck" =presidentialForecast[15: (16- input$obs),]$`Lewis-Beck`,
@@ -63,15 +64,15 @@ server <- function(input, output) {
            "Abramowitz" =presidentialForecast[15: (16- input$obs),]$Abramowitz )
   })
   
-  output$view <- renderTable({
+  output$view <- renderTable({ #prints table 
     tail(presidentialForecast , n = input$obs )
   })
   
   output$distPlot <- renderPlot({
    
-    hist(presidentialForecast[15: (16- input$obs),]$Actual, col=rgb(1,0,0,alpha=0.5), xlim = c(40,65),
+    hist(presidentialForecast[15: (16- input$obs),]$Actual, col=rgb(1,0,0,alpha=0.5), xlim = c(40,65), #plot of actual results 
          main= "Comparing election models to actual election results", xlab = "Predicted Result")
-    hist(datasetInput(),  col=rgb(0,0,1,alpha=0.5), add=T)
+    hist(datasetInput(),  col=rgb(0,0,1,alpha=0.5), add=T) #plot of model 
     legend( "topright", legend= c("model", "actual", "overlap"), col= c("blue", "red", "purple" ),
             lty= 1, cex=0.8) 
      
