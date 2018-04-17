@@ -1,4 +1,8 @@
 # Define UI for dataset viewer app ----
+library("EBMAforecast")
+data("presidentialForecast")
+
+
 ui <- fluidPage(
   
   plotOutput("distPlot", click = "plot_click"),
@@ -68,7 +72,7 @@ server <- function(input, output) {
     hist(presidentialForecast[15: (16- input$obs),]$Actual, col=rgb(1,0,0,alpha=0.5), xlim = c(40,65),
          main= "Comparing election models to actual election results", xlab = "Predicted Result")
     hist(datasetInput(),  col=rgb(0,0,1,alpha=0.5), add=T)
-    legend( "topright", legend= c("model", "actual", "overlap"), col= c("red", "blue", "purple" ),
+    legend( "topright", legend= c("model", "actual", "overlap"), col= c("blue", "red", "purple" ),
             lty= 1, cex=0.8) 
      
   })
@@ -81,10 +85,9 @@ server <- function(input, output) {
 
 shinyApp(ui,server)
 
-install.packages("EBMAforecast")
+
 library("EBMAforecast")
 data("presidentialForecast")
 
-legend( 1,9, legend= c("model", "actual", "overlap"), col= c("red", "blue", "purple" ))  
 
 
